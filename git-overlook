@@ -1,0 +1,106 @@
+#!/bin/sh
+# (C) by Filip M. Noetzel
+
+dashless=$(basename "$0" | sed -e 's/-/ /')
+USAGE="( create | show | clear )"
+
+SUBDIRECTORY_OK=Yes
+OPTIONS_SPEC=
+. git-sh-setup
+require_work_tree
+cd_to_toplevel
+
+TMP="$GIT_DIR/.git-overlook.$$"
+trap 'rm -f "$TMP-*"' 0
+
+ref_overlook=refs/overlook
+
+no_changes () {
+	git diff-index --quiet --cached HEAD --ignore-submodules --
+}
+
+clear_overlook () {
+	if test $# != 0
+	then
+		die "git-overlook clear with parameters is unimplemented"
+	fi
+	if current=$(git rev-parse -q --verify $ref_overlook)
+	then
+		git update-ref -d $ref_overlook $current
+	fi
+}
+
+create_overlook () {
+	git update-index -q --refresh
+	if no_changes
+	then
+		echo 'No changes in index (use "git add" and try again)'
+		exit 0
+	fi
+
+	git update-index -q --refresh
+	if no_changes
+	then
+		exit 0
+	fi
+
+	# state of the base commit
+	if b_commit=$(git rev-parse --verify HEAD)
+	then
+		head=$(git log --no-color --abbrev-commit --pretty=oneline -n 1 HEAD --)
+	else
+		die "You do not have the initial commit yet"
+	fi
+
+	if branch=$(git symbolic-ref -q HEAD)
+	then
+		branch=${branch#refs/heads/}
+	else
+		branch='(no branch)'
+	fi
+
+        echo "\n# Overlook message, please" > $TMP
+
+        git_editor "$TMP"
+
+	# state of the index
+	i_tree=$(git write-tree) &&
+	i_commit=$(cat $TMP | grep -c '^[^#]' |
+		git commit-tree $i_tree -p $b_commit) ||
+		die "Failed to create overlook tree object"
+
+	# Make sure the reflog for overlook is kept.
+	: >>"$GIT_DIR/logs/$ref_overlook"
+
+	git update-ref -m "overlook on $branch" $ref_overlook $i_commit ||
+		die "Cannot save the current status"
+
+        git reset HEAD
+
+	printf 'Marked index as overlook\n'
+}
+
+have_overlook () {
+	git rev-parse -q --verify $ref_overlook >/dev/null
+}
+
+show_overlook () {
+	have_overlook || return 0
+        git show $ref_overlook
+}
+
+# Main command set
+case "$1" in
+create)
+	create_overlook
+	;;
+show)
+	show_overlook
+	;;
+clear)
+	clear_overlook
+	;;
+*)
+	usage
+	;;
+esac

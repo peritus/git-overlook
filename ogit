@@ -1,0 +1,34 @@
+#!/bin/sh
+# (C) by Filip M. Noetzel
+
+SUBDIRECTORY_OK=Yes
+OPTIONS_SPEC=
+. git-sh-setup
+require_work_tree
+cd_to_toplevel
+
+ref_overlook=refs/overlook
+
+unapply_overlook () {
+	git show $ref_overlook -p | patch --reverse > /dev/null
+}
+
+apply_overlook () {
+	git show $ref_overlook -p | patch > /dev/null
+}
+
+git rev-parse -q --verify $ref_overlook >/dev/null
+HAVE_OVERLOOK=$?
+
+if [ "$HAVE_OVERLOOK" -eq "0" ]; then
+	unapply_overlook || die "unapplying overlooked changes failed";
+fi
+
+git $@
+RETURN=$?
+
+if [ "$HAVE_OVERLOOK" -eq "0" ]; then
+	apply_overlook || die "unapplying overlooked changes failed"
+fi
+
+exit $RETURN
