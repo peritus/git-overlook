@@ -1,5 +1,13 @@
+============
 git-overlook
 ============
+
+:Author: `Filip Noetzel <filip@j03.de>`_
+:Version: 0.01
+:Web: http://j03.de/projects/git-overlook/
+:Git: git://github.com/peritus/git-overlook.git
+:Source: http://github.com/peritus/git-overlook/
+:Tarball: http://github.com/peritus/git-overlook/tarball/master
 
 A `git <http://git.or.cz/>`__ extension for having certain changesets in your working dir, but not in
 your tree. Think `.gitignore
@@ -12,19 +20,36 @@ database/password configuration.
 Installation
 ------------
 
-For the moment, you need to add git-overlook to your path. This is a propotype
-- a proper version would be part of (a forked version of) git.
+For the moment, you need to add git-overlook to your path::
+
+    $> cd $HOME
+    $> git clone git://github.com/peritus/git-overlook.git
+    $> echo 'PATH=$PATH:$HOME/git-overlook/' >> $HOME/.profile
+    $> ogit overlook
+
+Optionally, you can map ``ogit`` as your standard ``git``::
+
+    $> echo 'alias git=ogit' >> $HOME/profile
+
+This way you can use ``git`` instead of ``ogit`` in the following examples, so
+there is no need to overwrite your `muscle memory
+<http://en.wikipedia.org/wiki/Muscle_memory>`__.
 
 Usage
 -----
 
 Then, use ``ogit`` ("omitting git" - a simple wrapper for git) instead of
-``git`` for your daily work. Use ``git-overlook`` to manage changesets, git
+``git`` for your daily work. Use ``ogit-overlook`` to manage changesets, git
 should keep local.
 
-``git-overlook create`` Set the current index as an overlooked changeset
-``git-overlook show`` Show the current overlooked changeset
-``git-overlook clear`` Remove the overlooked changeset
+``ogit overlook create``
+  Set the current index as an overlooked changeset
+
+``ogit overlook show``
+  Show the current overlooked changeset
+
+``ogit overlook clear``
+  Remove the overlooked changeset
 
 Example
 -------
@@ -61,7 +86,7 @@ Advise git to overlook this change (you will be asked for a insightful message,
 just like ``git commit``:
 ::
 
-    $> git-overlook create
+    $> ogit overlook create
 
 The change is gone (at least from git's point of view), but the working dir
 contains your change:
@@ -71,7 +96,18 @@ contains your change:
     $> ogit diff --cached
     $> cat config.inc
     DATABASE_NAME='development_db'
+    $> ogit show HEAD:config.inc
+    # This is a sample configuration file
+    
+    DATABASE_NAME='' # your database name
+    
 
+Prototype warning
+-----------------
+This is a propotype - a proper version would be part of (a forked version of)
+git. The wrapper around git is particular slow, so in case you have a slow
+machine, you care about performance or your name is Linus Torvalds, please port
+this to C.
 
 License
 -------
