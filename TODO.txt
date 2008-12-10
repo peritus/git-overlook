@@ -1,0 +1,5 @@
+ * ogit overlook create -m <messages>
+ * multiple overlooked changesets
+ * attached overlooked changesets (i.e. inherit all parent commit's overlooked)
+
+ * LOTs of error handling
