@@ -6,7 +6,7 @@ USAGE="( create | show | clear )"
 
 SUBDIRECTORY_OK=Yes
 OPTIONS_SPEC=
-. git-sh-setup
+. "$(git --exec-path)/git-sh-setup"
 require_work_tree
 cd_to_toplevel
 
@@ -59,13 +59,9 @@ create_overlook () {
 		branch='(no branch)'
 	fi
 
-        echo "\n# Overlook message, please" > $TMP
-
-        git_editor "$TMP"
-
 	# state of the index
 	i_tree=$(git write-tree) &&
-	i_commit=$(cat $TMP | grep -c '^[^#]' |
+	i_commit=$(echo "--" | grep -c '^[^#]' |
 		git commit-tree $i_tree -p $b_commit) ||
 		die "Failed to create overlook tree object"
 
