@@ -7,21 +7,23 @@ OPTIONS_SPEC=
 ref_overlook=refs/overlook
 
 . "$(git --exec-path)/git-sh-setup"
-cd_to_toplevel &&
 
 git rev-parse -q --verify $ref_overlook >/dev/null 2>/dev/null
 HAVE_OVERLOOK=$?
-
 if [ "$HAVE_OVERLOOK" -eq "0" ]; then
+    pushd `git rev-parse --show-cdup` > /dev/null
     DIFF=`git show refs/overlook --pretty=format:"%H..%P"| head -n 1`
     ( git diff $DIFF -p --no-color | patch -p1 > /dev/null ) || die "unapplying overlooked changes failed";
+    popd > /dev/null
 fi
 
 git $@
 RETURN=$?
 
 if [ "$HAVE_OVERLOOK" -eq "0" ]; then
+    pushd `git rev-parse --show-cdup` > /dev/null
     ( git diff $DIFF -p --no-color | patch -p1 --reverse > /dev/null ) || die "applying overlooked changes failed"
+    popd > /dev/null
 fi
 
 exit $RETURN
