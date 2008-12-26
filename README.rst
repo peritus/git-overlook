@@ -3,11 +3,12 @@ git-overlook
 ============
 
 :Author: `Filip Noetzel <filip@j03.de>`_
-:Version: 0.01
+:Version: 0.01 (might work)
 :Web: http://j03.de/projects/git-overlook/
-:Git: git://github.com/peritus/git-overlook.git
-:Source: http://github.com/peritus/git-overlook/
-:Tarball: http://github.com/peritus/git-overlook/tarball/master
+:Download: `git-overlook.tar.gz <http://j03.de/git/?p=git-overlook.git;a=snapshot;sf=tgz>`_
+:Git: ``clone http://j03.de/git/git-overlook.git/``
+  ( `browse <http://j03.de/git/?p=git-overlook.git>`_,
+  also `on github <http://github.com/peritus/git-overlook/>`_)
 
 A `git <http://git.or.cz/>`__ extension for having certain changesets in your working dir, but not in
 your tree. Think `.gitignore
@@ -82,8 +83,7 @@ Add the change to the index::
 
     $> ogit add config.inc
 
-Advise git to overlook this change (you will be asked for a insightful message,
-just like ``git commit``:
+Advise git to overlook this change:
 ::
 
     $> ogit overlook create

@@ -1,6 +1,15 @@
 #!/bin/sh
 # (C) by Filip M. Noetzel
 
+# HOW TO RUN THE TESTS
+
+# pushd /tmp
+# git clone git://git.kernel.org/pub/scm/git/git.git
+# cd git
+# make
+# popd
+# ./t/test-git-overlook.sh
+
 test_description='Test git overlook'
 
 GIT_OVERLOOK_DIR=`pwd`

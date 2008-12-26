@@ -1,5 +1,11 @@
+git-overlook TODO
+=================
+
  * ogit overlook create -m <messages>
+ * ogit overlook create --amend
+
  * multiple overlooked changesets
- * attached overlooked changesets (i.e. inherit all parent commit's overlooked)
+ * attached, inherited overlooked changesets (i.e. inherit all parent commit's
+   overlooked) <- # NEEDS thinking
 
  * LOTs of error handling
